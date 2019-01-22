@@ -7,6 +7,8 @@ class Directory(override val parentPath: String,
                 val contents: List[DirEntry])
   extends DirEntry(parentPath, name) {
 
+  def isRoot: Boolean = parentPath.isEmpty
+
   override def asFile: File = throw new FileSystemException("Specified dirEntry is a directory not a file")
 
   def replaceEntry(entryName: String, newEntry: DirEntry): Directory = {
@@ -42,6 +44,10 @@ class Directory(override val parentPath: String,
   override def asDirectory: Directory = this
 
   override def getType: String = "Directory"
+
+  override def isDirectory: Boolean = true
+
+  override def isFile: Boolean = false
 }
 
 object Directory {
