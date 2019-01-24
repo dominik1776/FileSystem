@@ -16,10 +16,23 @@ class Cd(dir: String) extends Command {
     }
   }
 
+  def colapseRelativeTokens(path: List[String], result: List[String]): List[String] = {
+    if (path.isEmpty) result
+    else if (".".equals(path.head)) colapseRelativeTokens(path.tail, result)
+    else if ((".." ).equals(path.head)){
+      if (result.isEmpty) null
+      else colapseRelativeTokens(path.tail, result.init)
+    }
+    else colapseRelativeTokens(path.tail, result :+ path.head)
+  }
+
   def doFindEntry(root: Directory, absolutePath: String): DirEntry = {
     val tokens: List[String] = absolutePath.substring(1).split(Directory.SEPARATOR).toList
-    findEntryHelper(root, tokens)  
+    val newToken = colapseRelativeTokens(tokens, List())
+      findEntryHelper(root, newToken)
+
   }
+
 
   override def apply(state: State): State = {
     //find root
